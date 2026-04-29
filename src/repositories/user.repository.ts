@@ -78,8 +78,4 @@ export class userRepository {
 
         return userDeleted;
     }
-
-    public async like(userId: string, tweetId: string) {
-        
-    }
 }
