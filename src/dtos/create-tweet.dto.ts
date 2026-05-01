@@ -1,3 +1,4 @@
 export interface CreateTweetDTO {
-    content: string,
+    id: string
+    content: string
 }

@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "user" ALTER COLUMN "create_at" SET DEFAULT CURRENT_TIMESTAMP,
+ALTER COLUMN "count_follower" SET DEFAULT 0,
+ALTER COLUMN "count_following" SET DEFAULT 0;
