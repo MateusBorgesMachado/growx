@@ -1,7 +1,7 @@
 export interface CreateUserDTO {
     name: string
-    email: string
-    username: string
+    email?: string
+    username?: string
     password: string
-    imageUrl: string
+    imageUrl?: string
 }
