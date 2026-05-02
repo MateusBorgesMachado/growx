@@ -47,4 +47,58 @@ export class UserService {
             throw error;
         }
     }
+
+    public async list() {
+        const users = await this.userRepository.list();
+
+        if (!users) throw new Error("Users not found")
+
+        const safeUsers = users.map((user: {
+            id: string;
+            name: string;
+            email: string | null;
+            username: string | null;
+            password: string;
+            imageUrl: string | null;
+            countFollower: number;
+            countFollowing: number;
+            createAt: Date;
+            updateAt: Date;
+        }) => {
+            const {password, ...safeUser} = user
+            return safeUser
+        })
+
+        return safeUsers
+    }
+
+    public async getById(id: string) {
+        const user = await this.userRepository.getById(id)
+
+        if (!user) throw new Error("User not found")
+
+        const { password, ...safeUser } = user
+
+        return safeUser
+    }
+
+    public async getByEmail(email: string) {
+        const user = await this.userRepository.getById(email)
+
+        if (!user) throw new Error("User not found")
+
+        const { password, ...safeUser } = user
+
+        return safeUser
+    }
+
+    public async getByUsername(username: string) {
+        const user = await this.userRepository.getById(username)
+
+        if (!user) throw new Error("User not found")
+
+        const { password, ...safeUser } = user
+
+        return safeUser
+    }
 }
