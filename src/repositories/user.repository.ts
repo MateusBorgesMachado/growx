@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import { prisma } from '../database/prisma.repository';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 
@@ -53,17 +52,17 @@ export class UserRepository {
     }
 
     // U - Update
-    public async update(id: string, userDTO: CreateUserDTO) {
+    public async update(id: string, data: any) {
         const userUpdated = await prisma.user.update({
             where: {
                 id
             },
             data: {
-                name: userDTO.name,
-                email: userDTO.email,
-                password: userDTO.password,
-                username: userDTO.username,
-                imageUrl: userDTO.imageUrl
+                name: data.name,
+                email: data.email,
+                password: data.password,
+                username: data.username,
+                imageUrl: data.imageUrl
             }
         })
 

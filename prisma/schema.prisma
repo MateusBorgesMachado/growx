@@ -26,7 +26,6 @@ model User {
 
   tweets   Tweet[]
   like     Like[]
-  comments comment[]
 
   @@map("user")
 }
@@ -36,14 +35,16 @@ model Tweet {
   content   String @db.VarChar()
   countLike Int    @default(0) @map("count_like") @db.SmallInt
 
-  createAt DateTime @map("create_at") @db.Timestamp()
+  createAt DateTime @map("create_at") @db.Timestamp() @default(now())
   updateAt DateTime @updatedAt @map("update_at")
 
   user   User   @relation(fields: [userId], references: [id])
   userId String @map("user_id") @db.VarChar(36)
 
+  tweet ReplyTweet? @relation("tweet")
+  reply ReplyTweet[] @relation("reply")
+
   userlike Like[]
-  comments comment[]
 
   @@map("tweet")
 }
@@ -71,14 +72,13 @@ model Like {
   @@map("like")
 }
 
-model comment {
-  userId  String @map("user_id") @db.VarChar(36)
-  tweetId String @map("tweet_id") @db.VarChar(36)
-  content String @db.VarChar()
+model ReplyTweet {
+  tweetId  String @map("tweet_id") @db.VarChar(36) @unique
+  replyId String @map("reply_id") @db.VarChar(36)
 
-  user  User  @relation(fields: [userId], references: [id])
-  tweet Tweet @relation(fields: [tweetId], references: [id])
+  tweet  Tweet @relation("tweet", fields: [tweetId], references: [id])
+  reply Tweet @relation("reply", fields: [replyId], references: [id])
 
-  @@id([userId, tweetId])
-  @@map("comments")
+  @@id([tweetId, replyId])
+  @@map("reply_tweet")
 }

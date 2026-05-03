@@ -3,6 +3,7 @@ import { CreateUserDTO } from "../dtos/create-user.dto";
 import { UserRepository } from "../repositories/user.repository";
 import bcrypt from 'bcrypt'
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/binary";
+import { error } from "console";
 
 export class UserService {
     private userRepository = new UserRepository();
@@ -65,7 +66,7 @@ export class UserService {
             createAt: Date;
             updateAt: Date;
         }) => {
-            const {password, ...safeUser} = user
+            const { password, ...safeUser } = user
             return safeUser
         })
 
@@ -83,7 +84,7 @@ export class UserService {
     }
 
     public async getByEmail(email: string) {
-        const user = await this.userRepository.getById(email)
+        const user = await this.userRepository.getByEmail(email)
 
         if (!user) throw new Error("User not found")
 
@@ -93,12 +94,53 @@ export class UserService {
     }
 
     public async getByUsername(username: string) {
-        const user = await this.userRepository.getById(username)
+        const user = await this.userRepository.getByUsername(username)
 
         if (!user) throw new Error("User not found")
 
         const { password, ...safeUser } = user
 
         return safeUser
+    }
+
+    public async update(id: string, data: { name?: string; email?: string; username?: string; password?: string; imageUrl?: string; }) {
+        const currentUser = await this.userRepository.getById(id)
+
+        if(!currentUser){
+            throw new Error('Login expired')
+        }
+
+        if (data.email && data.email !== currentUser.email) {
+            const emailInUse = await this.userRepository.getByEmail(data.email)
+            if (emailInUse) throw new Error("This email address is already in use")
+        }
+
+        let processPassword = data.password
+        if (data.password){
+            processPassword = await bcrypt.hash(data.password, 10);
+        }
+
+        const updatedData = {
+            name: data.name,
+            email: data.email,
+            username: data.username,
+            imageUrl: data.imageUrl,
+            password: processPassword
+        }
+
+        const updatedUser = await this.userRepository.update(id, updatedData)
+
+        const {password, ...safeUser} = updatedUser
+        return safeUser
+    }
+
+    public async delete(id: string) {
+        const currentUser = await this.userRepository.getById(id)
+
+        if(!currentUser) throw new Error('User not found')
+
+        const deletedUser = await this.userRepository.delete(id)
+
+        return deletedUser
     }
 }
