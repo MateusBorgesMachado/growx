@@ -126,4 +126,56 @@ export class UserController {
             return httpResponse(res, 500);
         }
     }
+
+    public update = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const { id } = req.params
+            const { name, email, username, password, imageUrl } = req.body;
+
+            if (!id && typeof id !== 'string') {
+                return httpResponse(res, 400)
+            }
+
+            if (!name || !email || !username || !password || !imageUrl) {
+                return httpResponse(res, 400)
+            }
+
+            const updatedUser = await this.userService.update(id as string, { name, email, username, password, imageUrl })
+
+            return res.status(200).send({
+                ok: true,
+                message: 'Usuário atualizado com sucesso',
+                data: updatedUser
+            })
+        } catch (error: any) {
+            if (error.message === 'User not found') {
+                return httpResponse(res, 404, { mensagem: error.message });
+            }
+
+            console.error(error);
+            return httpResponse(res, 500);
+        }
+    }
+
+    public delete = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const { id } = req.params
+
+            if (!id && typeof id !== 'string') {
+                return httpResponse(res, 400)
+            }
+
+            const deletedUser = await this.userService.delete(id as string)
+
+            return httpResponse(res, 200, deletedUser)
+
+        } catch (error: any) {
+            if (error.message === 'User not found') {
+                return httpResponse(res, 404, { mensagem: error.message });
+            }
+
+            console.error(error);
+            return httpResponse(res, 500);
+        }
+    }
 }
