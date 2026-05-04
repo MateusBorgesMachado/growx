@@ -1,16 +1,17 @@
 import { Router } from "express";
 import { UserController } from "../controllers/user.controller";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const userRoutes = Router();
 const userController = new UserController();
 
 userRoutes.post('/', userController.create);
 
-userRoutes.get('/', userController.list)
-userRoutes.get('/id/:id', userController.getById)
-userRoutes.get('/email/:email', userController.getByEmail)
-userRoutes.get('/username/:username', userController.getByUsername)
+userRoutes.get('/', authMiddleware, userController.list)
+userRoutes.get('/id/:id', authMiddleware, userController.getById)
+userRoutes.get('/email/:email', authMiddleware, userController.getByEmail)
+userRoutes.get('/username/:username', authMiddleware, userController.getByUsername)
 
-userRoutes.put('/:id', userController.update)
+userRoutes.put('/:id', authMiddleware, userController.update)
 
 export { userRoutes }

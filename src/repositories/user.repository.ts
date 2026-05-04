@@ -25,10 +25,30 @@ export class UserRepository {
         const user = await prisma.user.findUnique({
             where: {
                 id: userId
+            },
+            include:{
+                following: true
             }
         })
 
         return user
+    }
+
+    public async listById(ids: string[]) {
+        const users = await prisma.user.findMany({
+            where: {
+                id: {
+                    in: ids
+                }
+            },
+            orderBy: {
+                createAt: 'desc'
+            },
+            include: {
+                tweets: true
+            }
+        })
+        return users
     }
 
     public async getByUsername(username: string) {
