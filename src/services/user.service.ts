@@ -9,7 +9,7 @@ export class UserService {
     private userRepository = new UserRepository();
 
     public async create(userDTO: CreateUserDTO) {
-        try {
+
             const duplicateEmail = await this.userRepository.getByEmail(userDTO.email as string)
             if (duplicateEmail) {
                 throw new Error("email already exists")
@@ -37,16 +37,6 @@ export class UserService {
             this.userRepository.create(uuid, secureData)
 
             return secureData
-        } catch (error) {
-            if (error instanceof PrismaClientKnownRequestError) {
-                if (error.code === "P2002") {
-                    console.log(
-                        "There is a unique constraint violation, a new user cannot be created with this email",
-                    );
-                }
-            }
-            throw error;
-        }
     }
 
     public async list() {
@@ -142,5 +132,22 @@ export class UserService {
         const deletedUser = await this.userRepository.delete(id)
 
         return deletedUser
+    }
+
+    public async feed(id: string) {
+        const user = await this.userRepository.getById(id);
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const followingIds = user.following.map(follow => follow.followerId)
+        const allIds = [id, ...followingIds]
+
+        const users = await this.userRepository.listById(allIds)
+
+        const feed = users.map(f => f.tweets)
+
+        return feed
     }
 }

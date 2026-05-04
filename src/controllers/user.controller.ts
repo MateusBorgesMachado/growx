@@ -1,12 +1,13 @@
 import { AllModelsToStringIndex } from "@prisma/client/runtime/library";
 import { UserService } from "../services/user.service";
 import httpResponse from '../utils/http.response'
-import { Request, Response } from "express";
+import { Response } from "express";
+import { AuthRequest } from "../middlewares/auth.middleware";
 
 export class UserController {
     private userService = new UserService();
 
-    public create = async (req: Request, res: Response): Promise<Response> => {
+    public create = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
             const {
                 name,
@@ -52,7 +53,7 @@ export class UserController {
         }
     }
 
-    public list = async (req: Request, res: Response): Promise<Response> => {
+    public list = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
             const users = await this.userService.list();
 
@@ -63,7 +64,7 @@ export class UserController {
         }
     }
 
-    public getById = async (req: Request, res: Response): Promise<Response> => {
+    public getById = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
             const { id } = req.params;
 
@@ -84,7 +85,7 @@ export class UserController {
         }
     }
 
-    public getByEmail = async (req: Request, res: Response): Promise<Response> => {
+    public getByEmail = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
             const { email } = req.params;
 
@@ -106,7 +107,7 @@ export class UserController {
         }
     }
 
-    public getByUsername = async (req: Request, res: Response): Promise<Response> => {
+    public getByUsername = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
             const { username } = req.params;
 
@@ -127,7 +128,7 @@ export class UserController {
         }
     }
 
-    public update = async (req: Request, res: Response): Promise<Response> => {
+    public update = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
             const { id } = req.params
             const { name, email, username, password, imageUrl } = req.body;
@@ -157,7 +158,7 @@ export class UserController {
         }
     }
 
-    public delete = async (req: Request, res: Response): Promise<Response> => {
+    public delete = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
             const { id } = req.params
 
@@ -174,6 +175,27 @@ export class UserController {
                 return httpResponse(res, 404, { mensagem: error.message });
             }
 
+            console.error(error);
+            return httpResponse(res, 500);
+        }
+    }
+
+    public feed = async (req: AuthRequest, res: Response): Promise<Response> => {
+        try {
+            const userId = req.userId;
+
+            if (!userId) return httpResponse(res, 400, {
+                message: 'Usuário não autenticado'
+            })
+
+            const feed = await this.userService.feed(userId)
+
+            return httpResponse(res, 200, feed)
+        } catch (error: any) {
+            if (error.message === 'User not found') {
+                return httpResponse(res, 404, { mensagem: error.message });
+            }
+            
             console.error(error);
             return httpResponse(res, 500);
         }
