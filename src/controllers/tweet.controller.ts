@@ -1,22 +1,22 @@
-import { TweetService } from "../services/tweet.service";
-import { Response } from "express";
-import { AuthRequest } from "../middlewares/auth.middleware";
-import httpResponse from "../utils/http.response";
+import { TweetService } from "../services/tweet.service"
+import { Response } from "express"
+import { AuthRequest } from "../middlewares/auth.middleware"
+import httpResponse from "../utils/http.response"
 
 export class TweetController {
-    private tweetService = new TweetService();
+    private tweetService = new TweetService()
 
     public create = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
             const { content } = req.body
-            const userId = req.userId;
+            const userId = req.userId
 
             if (!content) {
-                return httpResponse(res, 400, { message: 'Conteúdo é obrigatório.' });
+                return httpResponse(res, 400, { message: 'Conteúdo é obrigatório.' })
             }
 
             if (!userId) {
-                return httpResponse(res, 401, { message: 'Usuário não autenticado.' });
+                return httpResponse(res, 401, { message: 'Usuário não autenticado.' })
             }
 
             const createdTweet = await this.tweetService.create(content, userId)
@@ -24,23 +24,23 @@ export class TweetController {
             return httpResponse(res, 201, createdTweet)
 
         } catch (error: any) {
-            console.error(error);
-            return httpResponse(res, 500);
+            console.error(error)
+            return httpResponse(res, 500)
         }
     }
 
     public createReply = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
-            const { content } = req.body;
-            const { tweetId } = req.params;
-            const userId = req.userId;
+            const { content } = req.body
+            const { tweetId } = req.params
+            const userId = req.userId
 
             if (!content) {
-                return httpResponse(res, 400, { message: 'Conteúdo é obrigatório.' });
+                return httpResponse(res, 400, { message: 'Conteúdo é obrigatório.' })
             }
 
             if (!userId) {
-                return httpResponse(res, 401, { message: 'Usuário não autenticado.' });
+                return httpResponse(res, 401, { message: 'Usuário não autenticado.' })
             }
 
             if(typeof tweetId !== 'string') return httpResponse(res, 401)
@@ -55,7 +55,7 @@ export class TweetController {
                     message: 'Tweet não encontrado'
                 })
             }
-            return httpResponse(res, 500); 
+            return httpResponse(res, 500) 
         }
     }
 }

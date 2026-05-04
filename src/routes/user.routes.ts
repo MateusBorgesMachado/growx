@@ -1,11 +1,11 @@
-import { Router } from "express";
-import { UserController } from "../controllers/user.controller";
-import { authMiddleware } from "../middlewares/auth.middleware";
+import { Router } from "express"
+import { UserController } from "../controllers/user.controller"
+import { authMiddleware } from "../middlewares/auth.middleware"
 
-const userRoutes = Router();
-const userController = new UserController();
+const userRoutes = Router()
+const userController = new UserController()
 
-userRoutes.post('/', userController.create);
+userRoutes.post('/', userController.create)
 
 userRoutes.get('/', authMiddleware, userController.list)
 userRoutes.get('/id/:id', authMiddleware, userController.getById)
