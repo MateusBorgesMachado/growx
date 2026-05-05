@@ -1,10 +1,9 @@
-import { randomUUID } from 'crypto';
-import { prisma } from '../database/prisma.repository';
-import { CreateUserDTO } from '../dtos/create-user.dto';
+import { prisma } from '../database/prisma.repository'
+import { CreateUserDTO } from '../dtos/create-user.dto'
 
 export class UserRepository {
     // C - Create
-    public async create(id: string,userDTO: CreateUserDTO) {
+    public async create(id: string, userDTO: CreateUserDTO) {
         const user = await prisma.user.create({
             data: {
                 id,
@@ -26,44 +25,86 @@ export class UserRepository {
         const user = await prisma.user.findUnique({
             where: {
                 id: userId
+            },
+            include: {
+                following: true,
+                tweets: true,
+                followers: true
             }
         })
 
         return user
     }
 
+    public async getFollows(userId: string) {
+        return await prisma.user.findUnique({
+            where: { id: userId },
+            include: {
+
+                followers: {
+                    include: {
+                        follower: true 
+                    }
+                },
+
+                following: {
+                    include: {
+                        following: true 
+                    }
+                }
+            }
+        });
+    }
+
+    public async listById(ids: string[]) {
+        const users = await prisma.user.findMany({
+            where: {
+                id: {
+                    in: ids
+                }
+            },
+            orderBy: {
+                createAt: 'desc'
+            },
+            include: {
+                tweets: true
+            }
+        })
+        return users
+    }
+
     public async getByUsername(username: string) {
-        const user = await prisma.user.findUnique({
+        const users = await prisma.user.findMany({
             where: {
                 username: username
             }
         })
 
-        return user
+        return users
     }
 
     public async getByEmail(userEmail: string) {
-        const user = await prisma.user.findUnique({
+        const users = await prisma.user.findMany({
             where: {
                 email: userEmail
             }
         })
 
-        return user
+        return users
     }
 
     // U - Update
-    public async update(id: string, userDTO: CreateUserDTO) {
+    public async update(id: string, data: any) {
         const userUpdated = await prisma.user.update({
             where: {
                 id
             },
             data: {
-                name: userDTO.name,
-                email: userDTO.email,
-                password: userDTO.password,
-                username: userDTO.username,
-                imageUrl: userDTO.imageUrl
+                name: data.name,
+                email: data.email,
+                password: data.password,
+                username: data.username,
+                imageUrl: data.imageUrl
             }
         })
 
@@ -78,6 +119,6 @@ export class UserRepository {
             }
         })
 
-        return userDeleted;
+        return userDeleted
     }
 }
