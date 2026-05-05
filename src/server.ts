@@ -1,5 +1,5 @@
 import express from 'express'
-import dotenv from 'dotenv'
+// import dotenv from 'dotenv'
 import { Router } from 'express'
 import { userRoutes } from './routes/user.routes'
 import { authRoutes } from './routes/auth.routes'
@@ -21,6 +21,6 @@ app.use('/like', likeRoutes)
 
 app.use(route)
 
-app.listen(process.env.PORT, () => {
+app.listen(3000, () => {
     console.log("Server open on PORT 3000")
 })
