@@ -1,9 +1,9 @@
-import { prisma } from '../database/prisma.repository';
-import { CreateUserDTO } from '../dtos/create-user.dto';
+import { prisma } from '../database/prisma.repository'
+import { CreateUserDTO } from '../dtos/create-user.dto'
 
 export class UserRepository {
     // C - Create
-    public async create(id: string,userDTO: CreateUserDTO) {
+    public async create(id: string, userDTO: CreateUserDTO) {
         const user = await prisma.user.create({
             data: {
                 id,
@@ -26,12 +26,34 @@ export class UserRepository {
             where: {
                 id: userId
             },
-            include:{
-                following: true
+            include: {
+                following: true,
+                tweets: true,
+                followers: true
             }
         })
 
         return user
+    }
+
+    public async getFollows(userId: string) {
+        return await prisma.user.findUnique({
+            where: { id: userId },
+            include: {
+
+                followers: {
+                    include: {
+                        follower: true 
+                    }
+                },
+
+                following: {
+                    include: {
+                        following: true 
+                    }
+                }
+            }
+        });
     }
 
     public async listById(ids: string[]) {
@@ -52,23 +74,23 @@ export class UserRepository {
     }
 
     public async getByUsername(username: string) {
-        const user = await prisma.user.findUnique({
+        const users = await prisma.user.findMany({
             where: {
                 username: username
             }
         })
 
-        return user
+        return users
     }
 
     public async getByEmail(userEmail: string) {
-        const user = await prisma.user.findUnique({
+        const users = await prisma.user.findMany({
             where: {
                 email: userEmail
             }
         })
 
-        return user
+        return users
     }
 
     // U - Update
@@ -97,6 +119,6 @@ export class UserRepository {
             }
         })
 
-        return userDeleted;
+        return userDeleted
     }
 }

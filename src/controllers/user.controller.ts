@@ -1,11 +1,10 @@
-import { AllModelsToStringIndex } from "@prisma/client/runtime/library";
-import { UserService } from "../services/user.service";
+import { UserService } from '../services/user.service'
 import httpResponse from '../utils/http.response'
-import { Response } from "express";
-import { AuthRequest } from "../middlewares/auth.middleware";
+import { Response } from 'express'
+import { AuthRequest } from '../middlewares/auth.middleware'
 
 export class UserController {
-    private userService = new UserService();
+    private userService = new UserService()
 
     public create = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
@@ -20,7 +19,7 @@ export class UserController {
             if (!name || !password) {
                 return httpResponse(res, 400, {
                     success: false,
-                    message: "O nome e a senha são necessários para concluir o cadastro"
+                    message: 'O nome e a senha são necessários para concluir o cadastro'
                 })
             }
 
@@ -31,85 +30,85 @@ export class UserController {
                 })
             }
 
-            const newUser = this.userService.create({ name, email, username, password, imageUrl })
+            const newUser = await this.userService.create({ name, email, username, password, imageUrl })
 
             return httpResponse(res, 201, newUser)
         } catch (error: any) {
             if (error.message === 'email already exists') {
                 return httpResponse(res, 409, {
                     email: req.body.email,
-                    mensagem: error.message
-                });
+                    mensagem: 'Email em uso'
+                })
             }
 
             if (error.message === 'username already exists') {
                 return httpResponse(res, 409, {
                     username: req.body.username,
-                    mensagem: error.message
-                });
+                    mensagem: 'Username em uso'
+                })
             }
-            console.error(error);
-            return httpResponse(res, 500);
+            console.error(error)
+            return httpResponse(res, 500)
         }
     }
 
     public list = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
-            const users = await this.userService.list();
+            const users = await this.userService.list()
 
             return httpResponse(res, 200, users)
         } catch (error: any) {
-            console.error(error);
-            return httpResponse(res, 500);
+            console.error(error)
+            return httpResponse(res, 500)
         }
     }
 
     public getById = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
-            const { id } = req.params;
+            const { id } = req.params
 
             if (!id || typeof id !== 'string') {
-                return httpResponse(res, 400, { mensagem: 'O ID informado é inválido.' });
+                return httpResponse(res, 400, { mensagem: 'O ID informado é inválido.' })
             }
 
-            const user = await this.userService.getById(id);
+            const user = await this.userService.getById(id)
 
-            return httpResponse(res, 200, user);
+            return httpResponse(res, 200, user)
         } catch (error: any) {
             if (error.message === 'User not found in the database') {
-                return httpResponse(res, 404, { detalhe: error.message });
+                return httpResponse(res, 404, { detalhe: error.message })
             }
 
-            console.error(error);
-            return httpResponse(res, 500);
+            console.error(error)
+            return httpResponse(res, 500)
         }
     }
 
     public getByEmail = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
-            const { email } = req.params;
+            const { email } = req.params
 
             if (!email || typeof email !== 'string') {
-                return httpResponse(res, 400, { mensagem: 'O e-mail informado é inválido.' });
+                return httpResponse(res, 400, { mensagem: 'O e-mail informado é inválido.' })
             }
 
-            const user = await this.userService.getByEmail(email);
+            const user = await this.userService.getByEmail(email)
 
-            return httpResponse(res, 200, user);
+            return httpResponse(res, 200, user)
 
         } catch (error: any) {
             if (error.message === 'User not found') {
-                return httpResponse(res, 404, { mensagem: error.message });
+                return httpResponse(res, 404, { mensagem: error.message })
             }
 
-            console.error(error);
-            return httpResponse(res, 500);
+            console.error(error)
+            return httpResponse(res, 500)
         }
     }
 
     public getByUsername = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
-            const { username } = req.params;
+            const { username } = req.params
 
             if (!username || typeof username !== 'string') {
                 return httpResponse(res, 400, { mensagem: 'O username informado é inválido.' })
@@ -120,18 +119,18 @@ export class UserController {
             return httpResponse(res, 200, user)
         } catch (error: any) {
             if (error.message === 'User not found') {
-                return httpResponse(res, 404, { mensagem: error.message });
+                return httpResponse(res, 404, { mensagem: error.message })
             }
 
-            console.error(error);
-            return httpResponse(res, 500);
+            console.error(error)
+            return httpResponse(res, 500)
         }
     }
 
     public update = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
             const { id } = req.params
-            const { name, email, username, password, imageUrl } = req.body;
+            const { name, email, username, password, imageUrl } = req.body
 
             if (!id && typeof id !== 'string') {
                 return httpResponse(res, 400)
@@ -150,11 +149,11 @@ export class UserController {
             })
         } catch (error: any) {
             if (error.message === 'User not found') {
-                return httpResponse(res, 404, { mensagem: error.message });
+                return httpResponse(res, 404, { mensagem: error.message })
             }
 
-            console.error(error);
-            return httpResponse(res, 500);
+            console.error(error)
+            return httpResponse(res, 500)
         }
     }
 
@@ -172,17 +171,17 @@ export class UserController {
 
         } catch (error: any) {
             if (error.message === 'User not found') {
-                return httpResponse(res, 404, { mensagem: error.message });
+                return httpResponse(res, 404, { mensagem: error.message })
             }
 
-            console.error(error);
-            return httpResponse(res, 500);
+            console.error(error)
+            return httpResponse(res, 500)
         }
     }
 
     public feed = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
-            const userId = req.userId;
+            const userId = req.userId
 
             if (!userId) return httpResponse(res, 400, {
                 message: 'Usuário não autenticado'
@@ -193,11 +192,11 @@ export class UserController {
             return httpResponse(res, 200, feed)
         } catch (error: any) {
             if (error.message === 'User not found') {
-                return httpResponse(res, 404, { mensagem: error.message });
+                return httpResponse(res, 404, { mensagem: error.message })
             }
             
-            console.error(error);
-            return httpResponse(res, 500);
+            console.error(error)
+            return httpResponse(res, 500)
         }
     }
 }

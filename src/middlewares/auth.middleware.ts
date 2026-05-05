@@ -1,37 +1,37 @@
-import type { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import httpResponse from '../utils/http.response';
+import type { Request, Response, NextFunction } from 'express'
+import jwt from 'jsonwebtoken'
+import httpResponse from '../utils/http.response'
 
 export interface AuthRequest extends Request {
-  userId?: string;
+  userId?: string
 }
 
 export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
-  const authHeader = req.headers.authorization;
+  const authHeader = req.headers.authorization
 
   if (!authHeader) {
-    return httpResponse(res, 401, { mensagem: 'Token not provided.' });
+    return httpResponse(res, 401, { mensagem: 'Token not provided.' })
   }
 
-  const [, token] = authHeader.split(' ');
+  const [, token] = authHeader.split(' ')
 
   if (!token) {
-    return httpResponse(res, 401, { mensagem: 'Malformatted token.' });
+    return httpResponse(res, 401, { mensagem: 'Malformatted token.' })
   }
 
   try {
-    const secret = process.env.JWT_SECRET;
+    const secret = process.env.JWT_SECRET
     if (!secret) {
-      throw new Error('Internal server error: JWT_SECRET missing');
+      throw new Error('Internal server error: JWT_SECRET missing')
     }
 
-    const decoded = jwt.verify(token, secret) as { id: string };
+    const decoded = jwt.verify(token, secret) as { id: string }
 
-    req.userId = decoded.id;
+    req.userId = decoded.id
 
-    return next();
+    return next()
     
   } catch (error) {
-    return httpResponse(res, 401, { mensagem: 'Invalid or expired token.' });
+    return httpResponse(res, 401, { mensagem: 'Invalid or expired token.' })
   }
-};
+}
