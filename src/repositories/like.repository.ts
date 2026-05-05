@@ -1,3 +1,4 @@
+import type { Prisma } from '../../generated/prisma/browser'
 import { prisma } from '../database/prisma.repository'
 
 export class LikeRepository {
@@ -18,7 +19,7 @@ export class LikeRepository {
 
 
     public async delete(userId: string, tweetId: string) {
-        return await prisma.$transaction(async (tx) => {
+        return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
 
         const unlike = await tx.like.delete({
 
