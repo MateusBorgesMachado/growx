@@ -21,6 +21,6 @@ app.use('/like', likeRoutes)
 
 app.use(route)
 
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
     console.log("Server open on PORT 3000")
 })
