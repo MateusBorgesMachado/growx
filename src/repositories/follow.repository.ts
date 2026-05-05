@@ -2,7 +2,7 @@ import { prisma } from '../database/prisma.repository'
 
 export class FollowRepository {
     public async follow(followerId: string, followingId: string) {
-        return await prisma.$transaction(async (tx) => {
+        return await prisma.$transaction(async (tx: any) => {
 
             const follow = await tx.userFollows.create({
                 data: {
@@ -30,7 +30,7 @@ export class FollowRepository {
     }
 
     public async unfollow(followerId: string, followingId: string) {
-        return await prisma.$transaction(async (tx) => {
+        return await prisma.$transaction(async (tx: any) => {
             const unfollow = await tx.userFollows.delete({
                 where: {
                     followerId_followingId: { followerId, followingId }
