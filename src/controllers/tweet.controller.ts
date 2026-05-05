@@ -50,12 +50,15 @@ export class TweetController {
             return httpResponse(res, 201, createdReply)
 
         } catch (error: any) {
+            console.log("ERRO REAL:", error)
             if(error.message == 'Tweet not found') {
                 return httpResponse(res, 400, {
                     message: 'Tweet não encontrado'
                 })
             }
-            return httpResponse(res, 500) 
+            return httpResponse(res, 500, {
+                message: error.message
+            }) 
         }
     }
 }

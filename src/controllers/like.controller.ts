@@ -1,10 +1,10 @@
-import { LikeService } from '../services/like.service';
+import { LikeService } from '../services/like.service'
 import { AuthRequest } from '../middlewares/auth.middleware'
-import { Response } from 'express';
-import httpResponse from '../utils/http.response';
+import { Response } from 'express'
+import httpResponse from '../utils/http.response'
 
 export class LikeController {
-    private likeService = new LikeService();
+    private likeService = new LikeService()
 
     public toggleLike = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {

@@ -1,9 +1,11 @@
-import { Router } from "express"
-import { LikeController } from "../controllers/like.controller"
-import { authMiddleware } from "../middlewares/auth.middleware"
+import { Router } from 'express'
+import { LikeController } from '../controllers/like.controller'
+import { authMiddleware } from '../middlewares/auth.middleware'
 
-const likeRouter = Router()
+const likeRoutes = Router()
 const likeController = new LikeController()
 
-likeRouter.post('/tweets/:tweetId/like', authMiddleware, likeController.toggleLike);
-likeRouter.delete('/tweets/:tweetId/like', authMiddleware, likeController.toggleLike);
+likeRoutes.post('/:tweetId/like', authMiddleware, likeController.toggleLike);
+likeRoutes.delete('/:tweetId/unlike', authMiddleware, likeController.toggleLike);
+
+export { likeRoutes}

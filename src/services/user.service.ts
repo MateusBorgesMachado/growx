@@ -1,26 +1,24 @@
-import { randomUUID } from "crypto";
-import { CreateUserDTO } from "../dtos/create-user.dto";
-import { UserRepository } from "../repositories/user.repository";
+import { randomUUID } from 'crypto'
+import { CreateUserDTO } from '../dtos/create-user.dto'
+import { UserRepository } from '../repositories/user.repository'
 import bcrypt from 'bcrypt'
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/binary";
-import { error } from "console";
 
 export class UserService {
-    private userRepository = new UserRepository();
+    private userRepository = new UserRepository()
 
     public async create(userDTO: CreateUserDTO) {
 
             const duplicateEmail = await this.userRepository.getByEmail(userDTO.email as string)
-            if (duplicateEmail) {
-                throw new Error("email already exists")
+            if (duplicateEmail[0]) {
+                throw new Error('email already exists')
             }
 
             const duplicateUsername = await this.userRepository.getByUsername(userDTO.username as string)
-            if (duplicateUsername) {
-                throw new Error("username already exists")
+            if (duplicateUsername[0] && duplicateEmail[0] !== null) {
+                throw new Error('username already exists')
             }
 
-            const salt = 10;
+            const salt = 10
             const passwordHash = await bcrypt.hash(userDTO.password, salt)
 
             const secureData = {
@@ -32,7 +30,7 @@ export class UserService {
 
             }
 
-            const uuid = randomUUID();
+            const uuid = randomUUID()
 
             this.userRepository.create(uuid, secureData)
 
@@ -40,21 +38,21 @@ export class UserService {
     }
 
     public async list() {
-        const users = await this.userRepository.list();
+        const users = await this.userRepository.list()
 
-        if (!users) throw new Error("Users not found")
+        if (!users) throw new Error('Users not found')
 
         const safeUsers = users.map((user: {
-            id: string;
-            name: string;
-            email: string | null;
-            username: string | null;
-            password: string;
-            imageUrl: string | null;
-            countFollower: number;
-            countFollowing: number;
-            createAt: Date;
-            updateAt: Date;
+            id: string
+            name: string
+            email: string | null
+            username: string | null
+            password: string
+            imageUrl: string | null
+            countFollower: number
+            countFollowing: number
+            createAt: Date
+            updateAt: Date
         }) => {
             const { password, ...safeUser } = user
             return safeUser
@@ -66,7 +64,7 @@ export class UserService {
     public async getById(id: string) {
         const user = await this.userRepository.getById(id)
 
-        if (!user) throw new Error("User not found")
+        if (!user) throw new Error('User not found')
 
         const { password, ...safeUser } = user
 
@@ -76,9 +74,9 @@ export class UserService {
     public async getByEmail(email: string) {
         const user = await this.userRepository.getByEmail(email)
 
-        if (!user) throw new Error("User not found")
+        if (!user[0]) throw new Error('User not found')
 
-        const { password, ...safeUser } = user
+        const { password, ...safeUser } = user[0]
 
         return safeUser
     }
@@ -86,14 +84,14 @@ export class UserService {
     public async getByUsername(username: string) {
         const user = await this.userRepository.getByUsername(username)
 
-        if (!user) throw new Error("User not found")
+        if (!user[0]) throw new Error('User not found')
 
-        const { password, ...safeUser } = user
+        const { password, ...safeUser } = user[0]
 
         return safeUser
     }
 
-    public async update(id: string, data: { name?: string; email?: string; username?: string; password?: string; imageUrl?: string; }) {
+    public async update(id: string, data: { name?: string; email?: string; username?: string; password?: string; imageUrl?: string }) {
         const currentUser = await this.userRepository.getById(id)
 
         if(!currentUser){
@@ -102,12 +100,12 @@ export class UserService {
 
         if (data.email && data.email !== currentUser.email) {
             const emailInUse = await this.userRepository.getByEmail(data.email)
-            if (emailInUse) throw new Error("This email address is already in use")
+            if (emailInUse[0]) throw new Error('This email address is already in use')
         }
 
         let processPassword = data.password
         if (data.password){
-            processPassword = await bcrypt.hash(data.password, 10);
+            processPassword = await bcrypt.hash(data.password, 10)
         }
 
         const updatedData = {
@@ -135,14 +133,15 @@ export class UserService {
     }
 
     public async feed(id: string) {
-        const user = await this.userRepository.getById(id);
+        const user = await this.userRepository.getById(id)
 
         if (!user) {
-            throw new Error("User not found");
+            throw new Error('User not found')
         }
 
-        const followingIds = user.following.map(follow => follow.followerId)
+        const followingIds = user.following.map(follow => follow.followingId)
         const allIds = [id, ...followingIds]
+        console.log(allIds)
 
         const users = await this.userRepository.listById(allIds)
 

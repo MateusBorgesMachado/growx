@@ -1,12 +1,12 @@
-import type { Response } from "express";
+import type { Response } from 'express'
 
 enum messageMap {
-    "Operação realizada com sucesso" = 200,
-    "Registro cadastrado com sucesso" = 201,
-    "Registro não encontrado" = 404,
-    "Conflito: Este registro já está cadastrado no sistema." = 409,
-    "Requisição inválida. Verifique os parametros e tente novamente" = 400,
-    "Ops! Ocorreu um erro inesperado no servidor." = 500
+    'Operação realizada com sucesso' = 200,
+    'Registro cadastrado com sucesso' = 201,
+    'Registro não encontrado' = 404,
+    'Conflito: Este registro já está cadastrado no sistema.' = 409,
+    'Requisição inválida. Verifique os parametros e tente novamente' = 400,
+    'Ops! Ocorreu um erro inesperado no servidor.' = 500
 }
 
 export default function httpResponse<T>(res: Response, statusCode: number, data?: T) {

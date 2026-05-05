@@ -13,10 +13,10 @@ export class LikeService {
 
         if (existingLike) {
             const unlike = await this.likeRepository.delete(userId, tweetId)
-            return unlike.isLiked
+            return unlike.isLiked = false
         }
 
         const like = await this.likeRepository.create(userId, tweetId)
-        return like.isLiked
+        return like.isLiked = true
     }
 }

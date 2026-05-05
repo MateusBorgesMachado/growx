@@ -1,22 +1,22 @@
-import type { Request, Response } from "express";
-import httpResponse from "../utils/http.response";
-import { AuthService } from "../services/auth.service";
+import type { Request, Response } from 'express'
+import httpResponse from '../utils/http.response'
+import { AuthService } from '../services/auth.service'
 
 export class AuthController {
-    private authService = new AuthService();
+    private authService = new AuthService()
 
     public login = async (req: Request, res: Response): Promise<Response> => {
         try {
-            const { email, password } = req.body;
+            const { email, password } = req.body
 
             if (!email || !password) {
-                return httpResponse(res, 400, { message: 'Email and password are required' });
+                return httpResponse(res, 400, { message: 'Email and password are required' })
             }
 
-            const token = await this.authService.login(email, password);
+            const token = await this.authService.login(email, password)
 
 
-            return httpResponse(res, 200, { token });
+            return httpResponse(res, 200, { token })
 
         } catch (error: any) {
 
@@ -26,10 +26,10 @@ export class AuthController {
                     email: req.body,
                     password: req.body,
                     mensagem: error.message
-                });
+                })
             }
-            console.error(error);
-            return httpResponse(res, 500);
+            console.error(error)
+            return httpResponse(res, 500)
         }
-    };
+    }
 }
