@@ -23,6 +23,9 @@ export class FollowService {
     }
 
     public async unfollowUser(followerId: string, followingId: string) {
+        const existingUser = await this.userRepository.getById(followingId)
+        if (!existingUser) throw new Error('User not found')
+
         const existingFollow = await this.followRepository.getFollow(followerId, followingId);
         if (!existingFollow) throw new Error('You are not following this user yet');
 

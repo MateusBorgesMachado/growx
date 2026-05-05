@@ -18,15 +18,15 @@ export class FollowController {
             const follow = await this.followService.followUser(followerId, followingId);
             return httpResponse(res, 201, follow)
         } catch (error: any) {
-            if (error.message === 'You cannot follow yourself') {
-                return httpResponse(res, 400, {
-                    message: 'Você não pode seguir a si mesmo'
-                })
-            }
-
             if (error.message === 'User not found') {
                 return httpResponse(res, 400, {
                     message: 'Usuário não encontrado'
+                })
+            }
+
+            if (error.message === 'You cannot follow yourself') {
+                return httpResponse(res, 400, {
+                    message: 'Você não pode seguir a si mesmo'
                 })
             }
 
@@ -52,6 +52,12 @@ export class FollowController {
             const unfollow = await this.followService.unfollowUser(followerId, followingId);
             return httpResponse(res, 200, unfollow)
         } catch (error: any) {
+            if (error.message === 'User not found') {
+                return httpResponse(res, 400, {
+                    message: 'Usuário não encontrado'
+                })
+            }
+            
             if (error.message = 'You are not following this user yet') {
                 return httpResponse(res, 400, {
                     message: 'Você ainda não está seguindo este usuário'

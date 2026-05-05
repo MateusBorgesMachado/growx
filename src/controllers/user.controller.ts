@@ -129,14 +129,14 @@ export class UserController {
 
     public update = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
-            const { id } = req.params
+            const id = req.userId
             const { name, email, username, password, imageUrl } = req.body
 
             if (!id && typeof id !== 'string') {
                 return httpResponse(res, 400)
             }
 
-            if (!name || !email || !username || !password || !imageUrl) {
+            if (!name && !email && !username && !password && !imageUrl) {
                 return httpResponse(res, 400)
             }
 

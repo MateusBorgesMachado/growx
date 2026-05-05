@@ -12,6 +12,6 @@ userRoutes.get('/id/:id', authMiddleware, userController.getById)
 userRoutes.get('/feed', authMiddleware, userController.feed)
 
 
-userRoutes.put('/:id', authMiddleware, userController.update)
+userRoutes.put('/', authMiddleware, userController.update)
 
 export { userRoutes }
