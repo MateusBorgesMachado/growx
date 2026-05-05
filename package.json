@@ -2,7 +2,7 @@
   "name": "growx",
   "version": "1.0.0",
   "main": "dist/server.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsup src/server.ts --format esm --clean --minify",
