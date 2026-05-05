@@ -1,6 +1,6 @@
 import { FollowService } from '../services/follow.service'
-import { AuthRequest } from '../middlewares/auth.middleware'
-import { Response } from 'express'
+import type { AuthRequest } from '../middlewares/auth.middleware'
+import type { Response } from 'express'
 import httpResponse from '../utils/http.response'
 
 export class FollowController {

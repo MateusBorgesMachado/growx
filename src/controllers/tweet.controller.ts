@@ -1,6 +1,6 @@
 import { TweetService } from "../services/tweet.service"
-import { Response } from "express"
-import { AuthRequest } from "../middlewares/auth.middleware"
+import type { Response } from "express"
+import type { AuthRequest } from "../middlewares/auth.middleware"
 import httpResponse from "../utils/http.response"
 
 export class TweetController {
