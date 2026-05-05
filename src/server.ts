@@ -1,5 +1,5 @@
 import express from 'express'
-import { envs } from './envs'
+import { envs } from './envs/index'
 import { Router } from 'express'
 import { userRoutes } from './routes/user.routes'
 import { authRoutes } from './routes/auth.routes'
