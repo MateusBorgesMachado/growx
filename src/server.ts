@@ -6,7 +6,7 @@ import { authRoutes } from './routes/auth.routes'
 import { tweetRoutes } from './routes/tweet.routes'
 import { followRoutes } from './routes/follow.routes'
 import { likeRoutes } from './routes/like.routes'
-import { envs } from './envs'
+// import { envs } from './envs'
 
 const app = express()
 const route = Router()
