@@ -65,6 +65,7 @@ npx prisma migrate dev
 
 # Gera o client no caminho customizado
 npx prisma generate
+```
 ### 5. Inicie o servidor
 ```bash
 npm run dev
