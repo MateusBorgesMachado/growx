@@ -1,5 +1,5 @@
 import { prisma } from '../database/prisma.repository'
-import { CreateUserDTO } from '../dtos/create-user.dto'
+import type { CreateUserDTO } from '../dtos/create-user.dto'
 
 export class UserRepository {
     // C - Create

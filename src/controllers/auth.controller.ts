@@ -1,11 +1,12 @@
-import type { Request, Response } from 'express'
+import type { Response } from 'express'
+import type { AuthRequest } from '../middlewares/auth.middleware'
 import httpResponse from '../utils/http.response'
 import { AuthService } from '../services/auth.service'
 
 export class AuthController {
     private authService = new AuthService()
 
-    public login = async (req: Request, res: Response): Promise<Response> => {
+    public login = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
             const { email, password } = req.body
 

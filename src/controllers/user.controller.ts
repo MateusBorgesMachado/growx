@@ -1,7 +1,7 @@
 import { UserService } from '../services/user.service'
 import httpResponse from '../utils/http.response'
-import { Response } from 'express'
-import { AuthRequest } from '../middlewares/auth.middleware'
+import type { Response } from 'express'
+import type { AuthRequest } from '../middlewares/auth.middleware'
 
 export class UserController {
     private userService = new UserService()

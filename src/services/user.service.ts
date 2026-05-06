@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto'
-import { CreateUserDTO } from '../dtos/create-user.dto'
+import type { CreateUserDTO } from '../dtos/create-user.dto'
 import { UserRepository } from '../repositories/user.repository'
 import bcrypt from 'bcrypt'
 
@@ -8,33 +8,32 @@ export class UserService {
 
     public async create(userDTO: CreateUserDTO) {
 
-            const duplicateEmail = await this.userRepository.getByEmail(userDTO.email as string)
-            if (duplicateEmail[0]) {
-                throw new Error('email already exists')
-            }
+        const duplicateEmail = await this.userRepository.getByEmail(userDTO.email as string)
+        if (duplicateEmail[0]) {
+            throw new Error('email already exists')
+        }
 
-            const duplicateUsername = await this.userRepository.getByUsername(userDTO.username as string)
-            if (duplicateUsername[0] && duplicateEmail[0] !== null) {
-                throw new Error('username already exists')
-            }
+        const duplicateUsername = await this.userRepository.getByUsername(userDTO.username as string)
+        if (duplicateUsername[0] && duplicateEmail[0] !== null) {
+            throw new Error('username already exists')
+        }
 
-            const salt = 10
-            const passwordHash = await bcrypt.hash(userDTO.password, salt)
+        const salt = 10
+        const passwordHash = await bcrypt.hash(userDTO.password, salt)
 
-            const secureData = {
-                name: userDTO.name,
-                email: userDTO.email,
-                username: userDTO.username,
-                password: passwordHash,
-                imageUrl: userDTO.imageUrl
+        const secureData = {
+            name: userDTO.name,
+            email: userDTO.email as string,
+            username: userDTO.username as string,
+            password: passwordHash,
+            imageUrl: userDTO.imageUrl as string
+        }
 
-            }
+        const uuid = randomUUID()
 
-            const uuid = randomUUID()
+        this.userRepository.create(uuid, secureData)
 
-            this.userRepository.create(uuid, secureData)
-
-            return secureData
+        return secureData
     }
 
     public async list() {
@@ -94,7 +93,7 @@ export class UserService {
     public async update(id: string, data: { name?: string; email?: string; username?: string; password?: string; imageUrl?: string }) {
         const currentUser = await this.userRepository.getById(id)
 
-        if(!currentUser){
+        if (!currentUser) {
             throw new Error('Login expired')
         }
 
@@ -104,7 +103,7 @@ export class UserService {
         }
 
         let processPassword = data.password
-        if (data.password){
+        if (data.password) {
             processPassword = await bcrypt.hash(data.password, 10)
         }
 
@@ -118,14 +117,14 @@ export class UserService {
 
         const updatedUser = await this.userRepository.update(id, updatedData)
 
-        const {password, ...safeUser} = updatedUser
+        const { password, ...safeUser } = updatedUser
         return safeUser
     }
 
     public async delete(id: string) {
         const currentUser = await this.userRepository.getById(id)
 
-        if(!currentUser) throw new Error('User not found')
+        if (!currentUser) throw new Error('User not found')
 
         const deletedUser = await this.userRepository.delete(id)
 
@@ -139,13 +138,22 @@ export class UserService {
             throw new Error('User not found')
         }
 
-        const followingIds = user.following.map(follow => follow.followingId)
+        const followingIds = user.following.map((follow: { followerId: string; followingId: string }) => follow.followingId)
         const allIds = [id, ...followingIds]
         console.log(allIds)
 
         const users = await this.userRepository.listById(allIds)
 
-        const feed = users.map(f => f.tweets)
+        const feed = users.map((f: {
+            tweets: {
+                id: string;
+                createAt: Date;
+                updateAt: Date;
+                content: string;
+                countLike: number;
+                userId: string;
+            }[]
+        }) => f.tweets)
 
         return feed
     }

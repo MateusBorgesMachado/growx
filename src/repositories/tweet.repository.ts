@@ -1,5 +1,5 @@
 import { prisma } from '../database/prisma.repository'
-import { CreateTweetDTO } from '../dtos/create-tweet.dto'
+import type { CreateTweetDTO } from '../dtos/create-tweet.dto'
 
 export class TweetRepository {
     public async create(id: string, content: string, userId: string) {

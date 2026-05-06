@@ -18,7 +18,7 @@ export class LikeRepository {
 
 
     public async delete(userId: string, tweetId: string) {
-        return await prisma.$transaction(async (tx) => {
+        return await prisma.$transaction(async (tx: any) => {
 
         const unlike = await tx.like.delete({
 

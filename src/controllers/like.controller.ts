@@ -1,6 +1,6 @@
 import { LikeService } from '../services/like.service'
-import { AuthRequest } from '../middlewares/auth.middleware'
-import { Response } from 'express'
+import type { AuthRequest } from '../middlewares/auth.middleware'
+import type { Response } from 'express'
 import httpResponse from '../utils/http.response'
 
 export class LikeController {
