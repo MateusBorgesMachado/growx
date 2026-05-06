@@ -5,18 +5,31 @@ export class LikeService {
     private likeRepository = new LikeRepository()
     private tweetRepository = new TweetRepository()
 
-    public async toggleLike(userId: string, tweetId: string) {
+    public async like(userId: string, tweetId: string) {
         const tweet = await this.tweetRepository.getById(tweetId)
         if (!tweet) throw new Error('Tweet not found')
 
         const existingLike = await this.likeRepository.checkLike(userId, tweetId)
 
         if (existingLike) {
-            const unlike = await this.likeRepository.delete(userId, tweetId)
-            return unlike.isLiked = false
+            throw new Error('Like already exists')
         }
 
         const like = await this.likeRepository.create(userId, tweetId)
         return like.isLiked = true
+    }
+
+        public async unlike(userId: string, tweetId: string) {
+        const tweet = await this.tweetRepository.getById(tweetId)
+        if (!tweet) throw new Error('Tweet not found')
+
+        const existingLike = await this.likeRepository.checkLike(userId, tweetId)
+
+        if (!existingLike) {
+            throw new Error('Like does not exist')
+        }
+
+        const unlike = await this.likeRepository.delete(userId, tweetId)
+        return unlike.isLiked = true
     }
 }
