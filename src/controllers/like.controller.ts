@@ -6,7 +6,7 @@ import httpResponse from '../utils/http.response'
 export class LikeController {
     private likeService = new LikeService()
 
-    public toggleLike = async (req: AuthRequest, res: Response): Promise<Response> => {
+    public like = async (req: AuthRequest, res: Response): Promise<Response> => {
         try {
             const { tweetId } = req.params
             const userId = req.userId
@@ -17,13 +17,39 @@ export class LikeController {
 
             if(!tweetId || typeof tweetId !== 'string') return httpResponse(res, 400)
 
-            const result = await this.likeService.toggleLike(userId, tweetId)
+            await this.likeService.like(userId, tweetId)
 
-            const status = result ? 201 : 200
-
-            return httpResponse(res, status)
+            return httpResponse(res, 201)
         } catch (error: any) {
             if(error.message = 'Tweet not found'){
+                return httpResponse(res, 404)
+            }
+            if(error.message = 'Like already exists'){
+                return httpResponse(res, 400)
+            }
+            return httpResponse(res, 500)
+        }
+    }
+
+    public unlike = async (req: AuthRequest, res: Response): Promise<Response> => {
+        try {
+            const { tweetId } = req.params
+            const userId = req.userId
+
+            if(!userId) return httpResponse(res, 400, {
+                message: 'Usuário não autenticado'
+            })
+
+            if(!tweetId || typeof tweetId !== 'string') return httpResponse(res, 400)
+
+            await this.likeService.unlike(userId, tweetId)
+
+            return httpResponse(res, 201)
+        } catch (error: any) {
+            if(error.message = 'Tweet not found'){
+                return httpResponse(res, 404)
+            }
+            if(error.message = 'Like does not exist'){
                 return httpResponse(res, 400)
             }
             return httpResponse(res, 500)

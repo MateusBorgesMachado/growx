@@ -47,8 +47,8 @@ O projeto foi construído utilizando **Programação Orientada a Objetos (POO)**
 
 ### 1. Clone o repositório
 ```bash
-git clone [https://github.com/Joniclei/app-growtwitter](https://github.com/Joniclei/app-growtwitter)
-cd app-growtwitter
+git clone [https://github.com/MateusBorgesMachado/growx](https://github.com/MateusBorgesMachado/growx)
+cd growx
 ### 2. Instale as dependências
 ```bash
 npm install
