@@ -5,11 +5,14 @@ import { UserRepository } from '../repositories/user.repository'
 export class AuthService {
   private userRepository = new UserRepository()
 
-  public async login(email: string, PurePassword: string) {
-    const user = await this.userRepository.getByEmail(email)
+  public async login(emailOrUsername: string, PurePassword: string) {
+    let user = await this.userRepository.getByEmail(emailOrUsername)
 
     if (!user[0]) {
-      throw new Error('Invalid credentials')
+      user = await this.userRepository.getByUsername(emailOrUsername)
+      if (!user[0]) {
+        throw new Error('Invalid Credentials')
+      }
     }
 
     const CorrectPassword = await bcrypt.compare(PurePassword, user[0].password)
@@ -24,9 +27,9 @@ export class AuthService {
     }
 
     const token = jwt.sign(
-      { id: user[0].id }, 
-      secret,          
-      { expiresIn: '1d' } 
+      { id: user[0].id },
+      secret,
+      { expiresIn: '1d' }
     )
 
     return token
