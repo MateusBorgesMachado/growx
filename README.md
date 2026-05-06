@@ -9,6 +9,7 @@ API REST integrada com uma rede social baseada no X (Twitter), desenvolvida como
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 
 🔗 **Link do Deploy:** [https://growx-5403.onrender.com](https://growx-5403.onrender.com)
+
 🔗 **Link do Postman:** [https://documenter.getpostman.com/view/33375610/2sBXqMGynG](https://documenter.getpostman.com/view/33375610/2sBXqMGynG)
 
 ---
